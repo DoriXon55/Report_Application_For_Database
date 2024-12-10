@@ -1,0 +1,135 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="Coffee_1" language="java" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ced95029-b569-4027-895c-af2843a4e088">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Florists"/>
+	<style name="Title" fontName="Times New Roman" fontSize="50.0" bold="true"/>
+	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18.0"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12.0" bold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12.0"/>
+	<style name="Row" mode="Transparent">
+		<conditionalStyle backcolor="#E6DAC3">
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+		</conditionalStyle>
+	</style>
+	<query language="SQL"><![CDATA[SELECT 
+    CASE 
+        WHEN i.individual_name IS NOT NULL THEN CONCAT(i.individual_name, ' ', i.surname)
+        WHEN f.name IS NOT NULL THEN f.name
+    END AS client_name,
+    COALESCE(f.NIP, 'Brak NIP') AS nip,
+    ROUND(COALESCE(SUM(o.total_amount), 0), 2) AS total_payments,
+    COUNT(o.order_id) AS total_orders
+FROM 
+    customer c
+LEFT JOIN individual i ON c.customer_id = i.customer_id
+LEFT JOIN firm f ON c.customer_id = f.customer_id
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+WHERE 
+    i.individual_name IS NOT NULL OR f.name IS NOT NULL
+GROUP BY 
+    c.customer_id, 
+    i.individual_name, 
+    i.surname, 
+    f.name, 
+    f.NIP
+ORDER BY 
+    total_payments DESC]]></query>
+	<field name="client_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="client_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="client_name"/>
+	</field>
+	<field name="nip" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nip"/>
+		<property name="com.jaspersoft.studio.field.label" value="nip"/>
+	</field>
+	<field name="total_payments" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="total_payments"/>
+		<property name="com.jaspersoft.studio.field.label" value="total_payments"/>
+	</field>
+	<field name="total_orders" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="total_orders"/>
+		<property name="com.jaspersoft.studio.field.label" value="total_orders"/>
+	</field>
+	<group name="Group1">
+		<expression><![CDATA[$F{client_name}]]></expression>
+		<groupHeader>
+			<band height="37">
+				<element kind="frame" uuid="df26104b-a7fc-458f-8a21-50b13c7c7736" mode="Opaque" x="-21" y="7" width="597" height="24" forecolor="#B89F7D" backcolor="#F2EBDF">
+					<element kind="rectangle" uuid="369745f3-8095-4b8b-8b7a-38e42b7aef67" mode="Opaque" x="21" y="0" width="36" height="24" backcolor="#736343">
+						<pen lineWidth="0.0"/>
+					</element>
+					<element kind="textField" uuid="ef0a10c7-2940-4ac1-a69e-db1a00ae6f2e" x="68" y="0" width="182" height="24" forecolor="#736343" bold="true" style="SubTitle">
+						<expression><![CDATA[$F{client_name}]]></expression>
+					</element>
+					<element kind="textField" uuid="a1225b1f-5af9-4289-9f7a-1ad488bea9f4" x="420" y="2" width="160" height="20" fontSize="16.0" bold="true" hTextAlign="Right" style="SubTitle">
+						<expression><![CDATA[$F{nip}]]></expression>
+					</element>
+				</element>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="6"/>
+		</groupFooter>
+	</group>
+	<group name="Group2">
+		<expression><![CDATA[$F{nip}]]></expression>
+		<groupHeader>
+			<band height="64">
+				<element kind="textField" uuid="2105716d-5497-4bd5-81c4-2a71c10e0e7f" x="0" y="0" width="540" height="64" fontSize="14.0">
+					<expression><![CDATA["Ilość zamówień: " + $F{total_orders}  + "\n" +  "Łączna kwota zamówień: " + $F{total_payments} + " PLN"]]></expression>
+				</element>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="total_payments">
+		<expression><![CDATA[$F{total_payments}]]></expression>
+	</group>
+	<group name="total_orders">
+		<expression><![CDATA[$F{total_orders}]]></expression>
+	</group>
+	<background splitType="Stretch"/>
+	<title height="136" splitType="Stretch">
+		<element kind="staticText" uuid="1a652692-054a-40f3-ade5-68d8da36626d" x="170" y="0" width="384" height="62" vTextAlign="Middle" style="Title">
+			<text><![CDATA[Raport Klientów]]></text>
+		</element>
+		<element kind="staticText" uuid="88d4231e-f014-4b0d-b871-1737ba63a1ae" x="172" y="60" width="196" height="22" fontName="Times New Roman" style="SubTitle">
+			<text><![CDATA[Bydgoska Kwiaciarnia]]></text>
+		</element>
+		<element kind="staticText" uuid="f0bfb1ea-a85a-47cd-a1a4-43f22b45e80f" x="172" y="94" width="383" height="42" fontSize="10.0" hTextAlign="Right">
+			<text><![CDATA[Raport, który przedstawia wszystkie dane naszych klientów, ilość ich zamówień w naszej kwiaciarni oraz łączną kwotę wszystkich zamówień.]]></text>
+		</element>
+		<element kind="image" uuid="4373ee27-aea1-4684-a1c8-51f20c389e40" x="10" y="0" width="130" height="136">
+			<expression><![CDATA["rb_11412.png"]]></expression>
+		</element>
+	</title>
+	<pageHeader splitType="Stretch"/>
+	<columnHeader height="16" splitType="Stretch">
+		<element kind="line" uuid="1a61a836-d137-48b1-ad67-6ff64600bf93" positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1">
+			<pen lineWidth="0.5" lineColor="#999999"/>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<element kind="frame" uuid="a98495d8-3c8d-4fa0-81f5-30c3efc2f766" mode="Opaque" x="0" y="0" width="555" height="15" style="Row"/>
+		</band>
+	</detail>
+	<columnFooter height="45" splitType="Stretch">
+		<element kind="line" uuid="fa45a887-615a-4d84-a2d7-8a2219671b3c" positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1">
+			<pen lineWidth="0.5" lineColor="#999999"/>
+		</element>
+	</columnFooter>
+	<pageFooter height="25" splitType="Stretch">
+		<element kind="frame" uuid="183682bc-d976-4756-83e0-6625a3f98ed1" mode="Opaque" x="-21" y="1" width="597" height="24" forecolor="#D0B48E" backcolor="#F2EBDF">
+			<element kind="textField" uuid="0193f9b3-1559-491a-8580-b6988863b6a1" x="533" y="0" width="40" height="20" forecolor="#736343" fontSize="10.0" evaluationTime="Report" bold="false" vTextAlign="Middle" style="Column header">
+				<expression><![CDATA[" " + $V{PAGE_NUMBER}]]></expression>
+			</element>
+			<element kind="textField" uuid="d00b105e-494b-418b-8ac9-8b1b4824f4f0" x="453" y="0" width="80" height="20" forecolor="#736343" fontSize="10.0" bold="false" hTextAlign="Right" vTextAlign="Middle" style="Column header">
+				<expression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></expression>
+			</element>
+			<element kind="textField" uuid="0616f3fe-0354-456f-8911-ec30ec51a5ae" x="22" y="1" width="197" height="20" forecolor="#736343" fontSize="10.0" pattern="EEEEE dd MMMMM yyyy" bold="false" vTextAlign="Middle" style="Column header">
+				<expression><![CDATA[new java.util.Date()]]></expression>
+			</element>
+		</element>
+	</pageFooter>
+	<summary splitType="Stretch"/>
+</jasperReport>

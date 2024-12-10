@@ -1,0 +1,72 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="Blank_A4_Landscape" language="java" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fd88b76b-994a-4c0f-a197-4399604df82c">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Florists"/>
+	<query language="SQL"><![CDATA[SELECT 
+    flower.flower_name,
+    SUM(orderflower.quantity) AS total_quantity_sold,
+    SUM(orderflower.quantity * flower.price) AS total_sales
+FROM 
+    flower
+JOIN 
+    orderflower ON flower.flower_id = orderflower.flower_id
+GROUP BY 
+    flower.flower_id
+ORDER BY 
+    total_sales DESC
+]]></query>
+	<field name="flower_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="flower_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="flower_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="flower"/>
+	</field>
+	<field name="total_quantity_sold" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="total_quantity_sold"/>
+		<property name="com.jaspersoft.studio.field.label" value="total_quantity_sold"/>
+	</field>
+	<field name="total_sales" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="total_sales"/>
+		<property name="com.jaspersoft.studio.field.label" value="total_sales"/>
+	</field>
+	<group name="flower_name">
+		<expression><![CDATA[$F{flower_name}]]></expression>
+	</group>
+	<group name="total_quantity_sold">
+		<expression><![CDATA[$F{total_quantity_sold}]]></expression>
+	</group>
+	<group name="total_sales">
+		<expression><![CDATA[$F{total_sales}]]></expression>
+	</group>
+	<background splitType="Stretch"/>
+	<title height="79" splitType="Stretch">
+		<element kind="staticText" uuid="64a597d1-4eeb-4841-8d84-e199dd601f78" x="190" y="0" width="400" height="30" fontSize="20.0" hTextAlign="Center" vTextAlign="Middle">
+			<paragraph lineSpacing="Single"/>
+			<text><![CDATA[Raport sprzedaży kwiatów]]></text>
+		</element>
+		<element kind="staticText" uuid="ac529c10-3f0f-4b96-a633-be0de4ab5451" x="196" y="30" width="400" height="30" fontSize="16.0" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Bydgoska Kwiaciarnia]]></text>
+		</element>
+	</title>
+	<columnHeader height="232" splitType="Stretch">
+		<element kind="chart" chartType="bar" uuid="6d9dd11b-c969-4cf5-8042-65ac0511bb01" x="76" y="0" width="640" height="222" evaluationTime="Report" linkType="None" linkTarget="Self" theme="aegean">
+			<dataset kind="category" incrementGroup="total_sales">
+				<series>
+					<seriesExpression><![CDATA["f(flower_name) = total_sales"]]></seriesExpression>
+					<categoryExpression><![CDATA[$F{flower_name}]]></categoryExpression>
+					<valueExpression><![CDATA[$F{total_sales}]]></valueExpression>
+					<itemHyperlink linkType="None" linkTarget="Self"/>
+				</series>
+			</dataset>
+			<plot categoryAxisLabelColor="#000000" categoryAxisTickLabelColor="#000000" categoryAxisLineColor="#000000" valueAxisLabelColor="#000000" valueAxisTickLabelColor="#000000" valueAxisLineColor="#000000">
+				<itemLabel/>
+			</plot>
+		</element>
+	</columnHeader>
+	<columnFooter height="130" splitType="Stretch">
+		<element kind="frame" uuid="4964b403-bfb1-401f-affe-c5cc654f1dd1" x="0" y="0" width="800" height="130">
+			<element kind="textField" uuid="e53bfad4-1aac-4c75-805f-76cda094fa32" x="190" y="0" width="430" height="90" fontSize="15.0" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA["Wykres przedstawia sprzedaż kwiatów. Oś X przedstawia nazwy kwiatów a oś Y całkowitą sprzedaż, czyli sumę ilości sprzedanych kwiatów pomnożoną przez ich cenę"]]></expression>
+			</element>
+		</element>
+	</columnFooter>
+</jasperReport>
