@@ -1,0 +1,219 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="Simple_Blue" language="java" columnCount="1" pageWidth="595" pageHeight="842" orientation="Landscape" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="41f8437e-352f-4e97-803e-0272d56db280">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Florists"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<query language="SQL"><![CDATA[SELECT 
+    o.order_id,
+    GROUP_CONCAT(f.flower_name SEPARATOR ', ') AS ordered_flowers,
+    o.total_amount,
+    o.order_date,
+    CASE 
+        WHEN ind.customer_id IS NOT NULL THEN CONCAT(ind.individual_name, ' ', ind.surname, ', ', c.customer_contact, ', ', c.address)
+        WHEN fm.customer_id IS NOT NULL THEN CONCAT(fm.name, ', NIP: ', fm.nip, ', ', c.customer_contact, ', ', c.address)
+        ELSE 'Unknown Customer'
+    END AS customer_details,
+    emp.name AS employee,
+    dn.firm_name AS delivery_method,
+    pt.payment_name AS payment_type
+FROM 
+    orders o
+LEFT JOIN 
+    orderflower od ON o.order_id = od.order_id
+LEFT JOIN 
+    flower f ON od.flower_id = f.flower_id
+LEFT JOIN 
+    customer c ON o.customer_id = c.customer_id
+LEFT JOIN 
+    individual ind ON c.customer_id = ind.customer_id
+LEFT JOIN 
+    firm fm ON c.customer_id = fm.customer_id
+LEFT JOIN 
+    employee emp ON o.employee_id = emp.employee_id
+LEFT JOIN 
+    delivery d ON o.delivery_id = d.delivery_id
+LEFT JOIN 
+    deliveryname dn ON d.delivery_name_id = dn.delivery_name_id
+LEFT JOIN 
+    paymenttype pt ON o.payment_type_id = pt.payment_type_id
+GROUP BY 
+    o.order_id, o.total_amount, o.order_date, emp.name, dn.firm_name, pt.payment_name, 
+    ind.individual_name, ind.surname, c.customer_contact, c.address, 
+    fm.name, fm.nip
+ORDER BY 
+    o.order_date
+]]></query>
+	<field name="order_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="order_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="order_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="orders"/>
+	</field>
+	<field name="ordered_flowers" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ordered_flowers"/>
+		<property name="com.jaspersoft.studio.field.label" value="ordered_flowers"/>
+	</field>
+	<field name="total_amount" class="java.lang.Float">
+		<property name="com.jaspersoft.studio.field.name" value="total_amount"/>
+		<property name="com.jaspersoft.studio.field.label" value="total_amount"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="orders"/>
+	</field>
+	<field name="order_date" class="java.time.LocalDateTime">
+		<property name="com.jaspersoft.studio.field.name" value="order_date"/>
+		<property name="com.jaspersoft.studio.field.label" value="order_date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="orders"/>
+	</field>
+	<field name="customer_details" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="customer_details"/>
+		<property name="com.jaspersoft.studio.field.label" value="customer_details"/>
+	</field>
+	<field name="employee" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="name"/>
+		<property name="com.jaspersoft.studio.field.label" value="employee"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="employee"/>
+	</field>
+	<field name="delivery_method" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="firm_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="delivery_method"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="deliveryname"/>
+	</field>
+	<field name="payment_type" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="payment_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="payment_type"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="paymenttype"/>
+	</field>
+	<group name="Group1" keepTogether="true">
+		<expression><![CDATA[$F{order_id}]]></expression>
+		<groupHeader>
+			<band height="33">
+				<element kind="staticText" uuid="b735c820-15a4-4707-954d-47f5c029fabd" stretchType="NoStretch" mode="Opaque" x="-20" y="0" width="119" height="32" forecolor="#666666" backcolor="#E6E6E6" fontSize="10.0" hTextAlign="Center" vTextAlign="Middle">
+					<paragraph tabStopWidth="40"/>
+					<text><![CDATA[Numer zamówienia]]></text>
+					<property name="com.jaspersoft.studio.unit.tabStopWidth" value="px"/>
+				</element>
+				<element kind="textField" uuid="6ef2503b-6a40-4e2d-911c-31e590b86cdb" mode="Opaque" x="100" y="0" width="475" height="32" forecolor="#006699" backcolor="#E6E6E6" fontSize="12.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+					<expression><![CDATA["   "+$F{order_id}]]></expression>
+				</element>
+				<element kind="line" uuid="1fc252ae-26ef-4b8e-bbbf-d15793b4752a" x="-20" y="32" width="595" height="1" forecolor="#666666"/>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="Group2" keepTogether="true">
+		<expression><![CDATA[$F{ordered_flowers}]]></expression>
+		<groupHeader>
+			<band height="32">
+				<element kind="textField" uuid="de6af20c-44c7-40ec-a7c9-489db0883f56" x="100" y="0" width="455" height="32" forecolor="#006699" fontSize="12.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+					<expression><![CDATA[" "+$F{ordered_flowers}]]></expression>
+				</element>
+				<element kind="staticText" uuid="b3d93f76-4627-44b7-9943-6e380e744e59" x="0" y="0" width="100" height="32" forecolor="#666666" fontSize="10.0" hTextAlign="Left" vTextAlign="Middle">
+					<text><![CDATA[Zamówione kwiaty:]]></text>
+				</element>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="Group3" keepTogether="true">
+		<expression><![CDATA[$F{total_amount}]]></expression>
+		<groupHeader>
+			<band height="32">
+				<element kind="textField" uuid="49486c5f-f6b0-457d-8cde-48c12e063910" x="100" y="0" width="455" height="32" forecolor="#006699" fontSize="12.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+					<expression><![CDATA[" "+$F{total_amount}]]></expression>
+				</element>
+				<element kind="staticText" uuid="de3dbd22-7373-478a-a455-9b57eccd2c99" x="0" y="0" width="100" height="32" forecolor="#666666" fontSize="10.0" hTextAlign="Left" vTextAlign="Middle">
+					<text><![CDATA[Kwota zamówienia]]></text>
+				</element>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="Group4" keepTogether="true">
+		<expression><![CDATA[$F{order_date}]]></expression>
+		<groupHeader>
+			<band height="129">
+				<element kind="textField" uuid="c150dc14-4a5a-4b55-9a04-4243e9182733" x="100" y="0" width="454" height="32" forecolor="#006699" fontSize="12.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+					<expression><![CDATA[" "+$F{order_date}]]></expression>
+				</element>
+				<element kind="staticText" uuid="13a096dc-6732-4656-940a-091676fe4f82" x="0" y="0" width="100" height="32" forecolor="#666666" fontSize="10.0" hTextAlign="Left" vTextAlign="Middle">
+					<text><![CDATA[Data zamówienia]]></text>
+				</element>
+				<element kind="staticText" uuid="b4491c41-8e1c-4432-bbc4-84f79a1d68df" x="0" y="32" width="100" height="32" forecolor="#666666" fontSize="10.0" hTextAlign="Left" vTextAlign="Middle">
+					<text><![CDATA[Klient]]></text>
+				</element>
+				<element kind="textField" uuid="1ba8772a-5e2d-497e-874c-a40f774c7819" x="100" y="32" width="454" height="32" forecolor="#006699" fontSize="12.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+					<expression><![CDATA[" "+$F{customer_details}]]></expression>
+				</element>
+				<element kind="staticText" uuid="59536d20-fabb-42b2-a4eb-0dafb79df735" x="0" y="64" width="100" height="32" forecolor="#666666" fontSize="10.0" hTextAlign="Left" vTextAlign="Middle">
+					<text><![CDATA[Dostawa oraz typ płatności]]></text>
+				</element>
+				<element kind="textField" uuid="20be020a-089d-4a44-aed3-0c394f4b3217" x="100" y="64" width="454" height="32" forecolor="#006699" fontSize="12.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+					<expression><![CDATA[" "+$F{delivery_method} + ", " + $F{payment_type}]]></expression>
+				</element>
+				<element kind="staticText" uuid="21fce927-7346-4f86-8a76-26f3e27a975f" x="0" y="96" width="100" height="32" forecolor="#666666" fontSize="10.0" hTextAlign="Left" vTextAlign="Middle">
+					<text><![CDATA[Pracownik]]></text>
+				</element>
+				<element kind="textField" uuid="881f73ef-916a-472e-b4fc-d3beed63acdf" x="100" y="96" width="454" height="32" forecolor="#006699" fontSize="12.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+					<expression><![CDATA[" "+$F{employee}]]></expression>
+				</element>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="customer_details">
+		<expression><![CDATA[$F{customer_details}]]></expression>
+	</group>
+	<group name="employee">
+		<expression><![CDATA[$F{employee}]]></expression>
+	</group>
+	<group name="delivery_method">
+		<expression><![CDATA[$F{delivery_method}]]></expression>
+	</group>
+	<group name="payment_type">
+		<expression><![CDATA[$F{payment_type}]]></expression>
+	</group>
+	<background/>
+	<title height="72">
+		<element kind="frame" uuid="cfa348fb-2b2a-4414-8d62-1971c125bdc7" mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#006699">
+			<element kind="staticText" uuid="0efc0b82-b8e7-4411-9649-817528f3b00a" x="20" y="20" width="375" height="43" forecolor="#FFFFFF" fontSize="20.0" bold="true">
+				<text><![CDATA[Raport zamówień kwiaciarni]]></text>
+			</element>
+			<element kind="staticText" uuid="4b6e77a9-0c30-4850-a9b8-3eb02e398171" x="395" y="43" width="180" height="20" forecolor="#FFFFFF" fontSize="14.0" bold="false" hTextAlign="Right">
+				<text><![CDATA[Bydgoska Kwiaciarnia]]></text>
+			</element>
+		</element>
+	</title>
+	<pageHeader height="13"/>
+	<columnHeader height="21">
+		<element kind="line" uuid="0bcfa1b5-52c1-4e2a-9340-38e05e7d2a15" x="-20" y="20" width="595" height="1" forecolor="#666666"/>
+		<property name="com.jaspersoft.studio.layout"/>
+	</columnHeader>
+	<columnFooter/>
+	<pageFooter height="45">
+		<element kind="textField" uuid="b9e312c6-175c-4530-a8e9-bd8780741aad" mode="Opaque" x="-20" y="20" width="535" height="16" backcolor="#E6E6E6" hTextAlign="Right">
+			<expression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></expression>
+		</element>
+		<element kind="textField" uuid="b72313d1-d0b0-42c7-94ab-9a981f0fe7b8" mode="Opaque" x="515" y="20" width="60" height="16" backcolor="#E6E6E6" evaluationTime="Report">
+			<expression><![CDATA[" " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+		<element kind="textField" uuid="bb970923-2c5e-44f8-b3cd-168482e4dc32" x="0" y="22" width="100" height="13" pattern="EEEEE dd MMMMM yyyy">
+			<expression><![CDATA[new java.util.Date()]]></expression>
+		</element>
+		<element kind="line" uuid="8425f38a-f302-4745-a2b1-a7be01d7b045" positionType="FixRelativeToBottom" x="0" y="10" width="555" height="1"/>
+	</pageFooter>
+	<summary/>
+</jasperReport>

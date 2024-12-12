@@ -1,0 +1,230 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="faktura" language="java" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4eedbb89-b4f6-4469-9ab6-f642a1688cf7">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Florists"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50.0" bold="false" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18.0" bold="false" pdfFontName="Times-Roman"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14.0" bold="true"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle mode="Opaque" backcolor="#EEEFF0">
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+		</conditionalStyle>
+	</style>
+	<style name="Table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+			<topPen lineWidth="1.0" lineColor="#000000"/>
+			<leftPen lineWidth="1.0" lineColor="#000000"/>
+			<bottomPen lineWidth="1.0" lineColor="#000000"/>
+			<rightPen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#CACED0">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle backcolor="#D8D8D8">
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+		</conditionalStyle>
+	</style>
+	<dataset name="tableDataset" uuid="f13e6d36-5148-4ecc-bbe3-3035def80980">
+		<query language="sql"><![CDATA[]]></query>
+	</dataset>
+	<parameter name="nip" class="java.lang.String"/>
+	<parameter name="order_id" class="java.lang.Integer"/>
+	<query language="SQL"><![CDATA[SELECT 
+    o.order_id,
+    o.order_date,
+    GROUP_CONCAT(CONCAT(f.flower_name, ' (x', od.quantity, ')') SEPARATOR ', ') AS ordered_flowers,
+    ROUND(o.total_amount / 1.23, 2) AS net_amount,
+    ROUND(o.total_amount - (o.total_amount / 1.23), 2) AS vat_amount,
+    o.total_amount AS gross_amount,
+    fm.name AS customer_name,
+    fm.NIP AS customer_nip,
+    c.address AS customer_address,
+    c.customer_contact AS customer_contact,
+    pt.payment_name AS payment_type,
+    e.name AS employee_name
+FROM 
+    orders o
+LEFT JOIN 
+    orderflower od ON o.order_id = od.order_id
+LEFT JOIN 
+    flower f ON od.flower_id = f.flower_id
+LEFT JOIN 
+    customer c ON o.customer_id = c.customer_id
+LEFT JOIN 
+    firm fm ON c.customer_id = fm.customer_id
+LEFT JOIN 
+    paymenttype pt ON o.payment_type_id = pt.payment_type_id
+LEFT JOIN
+	employee e ON o.employee_id = e.employee_id
+WHERE fm.NIP = $P{nip} AND o.order_id = $P{order_id}
+GROUP BY 
+    o.order_id, o.order_date, fm.name, fm.NIP, c.address, c.customer_contact, pt.payment_name, o.total_amount
+ORDER BY 
+    o.order_date;
+]]></query>
+	<field name="order_id" class="java.lang.Integer"/>
+	<field name="ordered_flowers" class="java.lang.String"/>
+	<field name="order_date" class="java.sql.Date"/>
+	<field name="nip" class="java.lang.String"/>
+	<field name="customer_address" class="java.lang.String"/>
+	<field name="customer_contact" class="java.lang.String"/>
+	<field name="net_amount" class="java.math.BigDecimal"/>
+	<field name="vat_amount" class="java.math.BigDecimal"/>
+	<field name="gross_amount" class="java.math.BigDecimal"/>
+	<field name="payment_type" class="java.lang.String"/>
+	<field name="customer_name" class="java.lang.String"/>
+	<field name="employee_name" class="java.lang.String"/>
+	<title height="175" splitType="Stretch">
+		<element kind="staticText" uuid="57aed2b1-4f4e-40a3-a6ad-54dae8dd4c5a" x="0" y="90" width="84" height="25" fontSize="16.0" bold="true">
+			<text><![CDATA[Nabywca]]></text>
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</element>
+		<element kind="textField" uuid="219be4e6-9ce3-428c-8d14-1c414ca8e1ab" x="0" y="115" width="120" height="15">
+			<expression><![CDATA[$F{customer_name}]]></expression>
+		</element>
+		<element kind="line" uuid="806ce5df-1219-4876-ae0c-ca7405b1f246" x="0" y="80" width="556" height="1">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</element>
+		<element kind="textField" uuid="688cabc6-c348-4db7-aaac-f10a7a1f0007" x="0" y="130" width="179" height="15">
+			<expression><![CDATA[$F{customer_address}]]></expression>
+		</element>
+		<element kind="textField" uuid="aca3555a-57ec-420f-b8f2-49f362ca18df" x="0" y="145" width="120" height="15">
+			<expression><![CDATA[$F{nip}]]></expression>
+		</element>
+		<element kind="textField" uuid="d47d8e88-1a60-4101-b96a-ae2cd3d583c4" x="0" y="160" width="120" height="15">
+			<expression><![CDATA[$F{customer_contact}]]></expression>
+		</element>
+		<element kind="staticText" uuid="b62092ec-9053-4f27-b387-9b25d2909a68" x="410" y="145" width="120" height="15">
+			<text><![CDATA[85-798 Bydgoszcz]]></text>
+		</element>
+		<element kind="staticText" uuid="edbd74ac-0cbd-44c9-8a8e-ccf745191172" x="410" y="115" width="120" height="15">
+			<text><![CDATA[Bydgoska Kwiaciarnia]]></text>
+		</element>
+		<element kind="staticText" uuid="e0af6732-b7a9-4af3-9b85-c7c75de944f2" x="410" y="90" width="120" height="25" rotation="None" fontSize="16.0" bold="true">
+			<text><![CDATA[Sprzedawca]]></text>
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</element>
+		<element kind="staticText" uuid="dd52166a-1135-4931-adef-51e7972118bc" x="410" y="160" width="120" height="15">
+			<text><![CDATA[+48-320-450-222]]></text>
+		</element>
+		<element kind="staticText" uuid="2d2f365d-7b12-4a8f-990d-ff528a2660bc" x="410" y="130" width="150" height="15">
+			<text><![CDATA[Profesora Sylwestra Kaliskiego 7]]></text>
+		</element>
+		<element kind="staticText" uuid="0f86baff-6386-4f3f-b3fe-2388707babe8" x="370" y="10" width="90" height="20" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[Data wystawienia:]]></text>
+			<box rightPadding="4"/>
+		</element>
+		<element kind="textField" uuid="bb10dbe1-0a4f-4722-9953-c163b63cf979" x="465" y="10" width="84" height="20" pattern="EEEEE dd MMMMM yyyy" vTextAlign="Middle">
+			<expression><![CDATA[new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date())
+]]></expression>
+		</element>
+		<element kind="textField" uuid="3836ce65-eca3-4cad-a6de-b1818def0a2b" x="465" y="30" width="84" height="20" pattern="EEEEE dd MMMMM yyyy" hTextAlign="Left" vTextAlign="Middle">
+			<expression><![CDATA["INV0001/2024"]]></expression>
+		</element>
+		<element kind="staticText" uuid="0b3f9342-da78-4cfa-9fc5-2301c4749678" x="370" y="30" width="94" height="20" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[Numer Faktury:]]></text>
+			<box rightPadding="4"/>
+		</element>
+		<element kind="staticText" uuid="e622555d-198b-4ccd-a4a1-c59c53304058" x="90" y="18" width="210" height="25" fontSize="19.0" bold="true">
+			<text><![CDATA[Bydgoska Kwiaciarnia]]></text>
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</element>
+		<element kind="image" uuid="59e66bc2-4401-40a9-9c10-eb26f93b8cf7" x="-1" y="0" width="65" height="60">
+			<expression><![CDATA["src/main/resources/rb_11412.png"]]></expression>
+		</element>
+	</title>
+	<columnHeader height="20"/>
+	<detail>
+		<band height="132">
+			<element kind="textField" uuid="b4b978d1-c1e2-4914-b228-a263504e1310" x="340" y="10" width="186" height="19">
+				<expression><![CDATA["Format płatności: " + $F{payment_type}]]></expression>
+			</element>
+			<element kind="textField" uuid="dcf02990-bc9b-46f2-a8cf-a353c9a31fd8" x="340" y="29" width="186" height="19">
+				<expression><![CDATA["Termin Płatności: " + $F{order_date}]]></expression>
+			</element>
+			<element kind="staticText" uuid="b6a48923-ac3a-4a7b-958f-c1003647d1de" x="0" y="60" width="40" height="30" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[L.p.]]></text>
+			</element>
+			<element kind="staticText" uuid="925ed2c3-4af5-4b81-9a01-b4ad5c0a0fc6" x="40" y="60" width="170" height="30" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[Nazwa towaru / usługi]]></text>
+			</element>
+			<element kind="textField" uuid="72032b48-8f19-4ad6-97d1-c9fb98568d28" x="40" y="90" width="170" height="30" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{ordered_flowers}]]></expression>
+			</element>
+			<element kind="staticText" uuid="e47d4687-a5bb-403c-b199-bce28bab7056" x="210" y="60" width="110" height="30" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[Wartość netto]]></text>
+			</element>
+			<element kind="staticText" uuid="b0f43cf5-066c-45f5-8758-df76d5aad90c" x="320" y="60" width="50" height="30" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[VAT %]]></text>
+			</element>
+			<element kind="staticText" uuid="f35a959a-1375-4597-84bb-4781f503f8ae" x="370" y="60" width="100" height="30" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[Wartość VAT]]></text>
+			</element>
+			<element kind="staticText" uuid="b2624bbb-3ea5-41b3-a72a-f3c3ee16de07" x="470" y="60" width="100" height="30" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[Wartość brutto]]></text>
+			</element>
+			<element kind="textField" uuid="8a3ab000-d3a3-4248-854a-e13437ff86b2" x="210" y="90" width="110" height="30" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{net_amount}]]></expression>
+			</element>
+			<element kind="staticText" uuid="cf62c72d-d19e-45f6-a6b3-5b77a6dd5620" x="320" y="90" width="50" height="30" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[23]]></text>
+			</element>
+			<element kind="textField" uuid="0b88c61d-5694-4a11-8ce7-421500a08db1" x="370" y="90" width="100" height="30" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{vat_amount}]]></expression>
+			</element>
+			<element kind="textField" uuid="79f90149-a9fd-4e37-9f20-892432364bfa" x="470" y="90" width="100" height="30" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{gross_amount}]]></expression>
+			</element>
+			<element kind="textField" uuid="d5107773-3c0c-4dd0-80ee-7eac32987f15" x="0" y="90" width="40" height="30" evaluationTime="Auto" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA["1"]]></expression>
+			</element>
+		</band>
+	</detail>
+	<lastPageFooter height="150">
+		<element kind="textField" uuid="a71c4280-3664-4081-be6e-e4a1be1df72f" positionType="Float" x="0" y="80" width="261" height="33">
+			<expression><![CDATA["Wystawił: " + $F{employee_name}]]></expression>
+			<box>
+				<topPen lineWidth="1.1" lineStyle="Dashed"/>
+				<leftPen lineWidth="1.1" lineStyle="Dashed"/>
+				<bottomPen lineWidth="1.1" lineStyle="Dashed"/>
+				<rightPen lineWidth="1.1" lineStyle="Dashed"/>
+			</box>
+		</element>
+		<element kind="staticText" uuid="36aa233d-4305-48e6-974a-1bbf89bb3c8f" positionType="Float" mode="Opaque" x="0" y="120" width="556" height="30" backcolor="#E6E8E9" fontName="Serif" fontSize="9.0" italic="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[DZIĘKUJEMY ZA ZAUFANIE]]></text>
+		</element>
+		<element kind="textField" uuid="50f35bd9-7500-47eb-a207-6a9ff6cd53e7" x="0" y="50" width="179" height="30" hTextAlign="Left" vTextAlign="Middle">
+			<expression><![CDATA["Kwota opłacona: " + $F{gross_amount}]]></expression>
+		</element>
+	</lastPageFooter>
+</jasperReport>
