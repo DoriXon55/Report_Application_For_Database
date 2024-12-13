@@ -11,6 +11,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.fonts.FontFace;
+import net.sf.jasperreports.engine.fonts.FontFamily;
+import net.sf.jasperreports.engine.fonts.SimpleFontExtensionHelper;
+import net.sf.jasperreports.engine.fonts.SimpleFontFace;
 
 import javax.xml.crypto.Data;
 import java.awt.*;
@@ -19,6 +23,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class ReportGeneratorApp extends Application {
@@ -35,7 +40,7 @@ public class ReportGeneratorApp extends Application {
         System.out.println("Podane parametry: " + parameters);
 
         try (Connection connection = DatabaseConnector.getConnection()) {
-            // Ścieżka do pliku JRXML
+
             String jrxmlPath = "src/main/templates/" + reportName.toLowerCase() + ".jrxml";
 
             JasperReport report = JasperCompileManager.compileReport(jrxmlPath);
