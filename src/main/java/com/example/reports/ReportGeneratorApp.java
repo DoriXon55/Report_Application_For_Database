@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class ReportGeneratorApp extends Application {
     private ComboBox<String> reportComboBox;
-    private TextField minPriceField, maxPriceField, nipField, orderIdField;
+    private TextField minPriceField, maxPriceField, nipField, orderIdField, flowerNameField, customerTypeField;
     private Button generateButton;
     private Label statusLabel;
     private final String PDF_OUTPUT_PATH = "src/main/templates/";
@@ -102,6 +102,17 @@ public class ReportGeneratorApp extends Application {
                 }
                 parameters.put("nip", nip);
                 parameters.put("order_id", Integer.parseInt(orderId));
+            } else if ("Grupowanie".equals(selectedReport)) {
+                String flowerName = flowerNameField.getText();
+                String customerType = customerTypeField.getText();
+                if (flowerName.isEmpty()) {
+                    flowerName = "ALL"; // Ustawienie wartości domyślnej
+                }
+                if (customerType.isEmpty()) {
+                    customerType = "ALL"; // Ustawienie wartości domyślnej
+                }
+                parameters.put("flower_name", flowerName);
+                parameters.put("customer_type", customerType);
             }
 
             String reportPath = generateReportFile(selectedReport, parameters);
@@ -120,6 +131,8 @@ public class ReportGeneratorApp extends Application {
         maxPriceField.setVisible(false);
         nipField.setVisible(false);
         orderIdField.setVisible(false);
+        flowerNameField.setVisible(false);
+        customerTypeField.setVisible(false);
 
         if ("Wykres".equals(selectedReport)) {
             minPriceField.setVisible(true);
@@ -127,8 +140,12 @@ public class ReportGeneratorApp extends Application {
         } else if ("Faktura".equals(selectedReport)) {
             nipField.setVisible(true);
             orderIdField.setVisible(true);
+        } else if ("Grupowanie".equals(selectedReport)) {
+            flowerNameField.setVisible(true);
+            customerTypeField.setVisible(true);
         }
     }
+
 
     @Override
     public void start(Stage primaryStage) {
@@ -154,6 +171,10 @@ public class ReportGeneratorApp extends Application {
         nipField.setPromptText("NIP");
         orderIdField = new TextField();
         orderIdField.setPromptText("Numer zamówienia");
+        flowerNameField = new TextField();
+        flowerNameField.setPromptText("Nazwa kwiatu");
+        customerTypeField = new TextField();
+        customerTypeField.setPromptText("Typ klienta (np. Individual, Firm)");
 
         generateButton = new Button("Generuj raport");
         generateButton.setOnAction(e -> generateReport());
@@ -168,6 +189,8 @@ public class ReportGeneratorApp extends Application {
         grid.add(maxPriceField, 2, 1);
         grid.add(nipField, 1, 2);
         grid.add(orderIdField, 2, 2);
+        grid.add(flowerNameField, 1, 2);
+        grid.add(customerTypeField, 2, 2);
         grid.add(generateButton, 1, 3);
         grid.add(statusLabel, 1, 4, 2, 1);
 
